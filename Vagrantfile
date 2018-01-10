@@ -45,13 +45,20 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder "../.", "/vagrant_data"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
+  config.vm.provider "hyperv" do |hv|
+    config.vm.network "private_network", bridge: "VagrantNAT"
+#    config.vm.synced_folder "../.", "/vagrant_data", disabled: true, type: "smb", smb_username: "tmp", smb_password: "tmp"
+    config.vm.synced_folder "../.", "/vagrant_data", type: "nfs"
+    hv.enable_virtualization_extensions = true
+    hv.differencing_disk = true
+  end
   config.vm.provider "virtualbox" do |vb|
+    config.vm.synced_folder "../.", "/vagrant_data"
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
   #
